@@ -7,11 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SubscriberService {
 
-    @RabbitListener(queues = "${rabbitmq.queue.name}")
-
-
+    @RabbitListener(containerFactory = "listenerContainerFactory", queues = "${rabbitmq.queue.name}")
     public void receiveMessage(Message message) {
-        System.out.println("Received message: " + message);
+        System.out.println("Received message: " + new String(message.getBody())) ;
     }
 
 }

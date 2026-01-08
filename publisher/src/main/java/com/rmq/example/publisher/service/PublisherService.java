@@ -10,7 +10,7 @@ public class PublisherService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void publishTextMessage(String message, String queueName) {
+    public void publishMessage(String message, String queueName) {
         System.out.println("Published message to " + queueName + ": " + message);
         rabbitTemplate.convertAndSend(queueName, message);
     }

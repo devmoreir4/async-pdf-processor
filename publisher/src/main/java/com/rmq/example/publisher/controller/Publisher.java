@@ -16,10 +16,10 @@ public class Publisher {
     @Autowired
     private PublisherService publisherService;
 
-    @PostMapping("/publish/text")
-    public void publishText(@RequestBody String text) {
-        System.out.println("Sending message: " + text);
-        publisherService.publishTextMessage(text, queueName);
+    @PostMapping("/publish/message")
+    public void publishTextMessage(@RequestBody String message) {
+        System.out.println("Sending message: " + message);
+        publisherService.publishMessage(message, queueName);
     }
 
 }
