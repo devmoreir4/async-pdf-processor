@@ -16,10 +16,16 @@ public class Publisher {
     @Autowired
     private PublisherService publisherService;
 
-    @PostMapping("/publish/message")
-    public void publishTextMessage(@RequestBody String message) {
-        System.out.println("Sending message: " + message);
-        publisherService.publishMessage(message, queueName);
+    @PostMapping("/publish/text")
+    public void publishText(@RequestBody String message) {
+        System.out.println("Sending text message: " + message);
+        publisherService.publishTextMessage(message, queueName);
+    }
+
+    @PostMapping("/publish/json")
+    public void publishJson(@RequestBody String message) {
+        System.out.println("Sending json message: " + message);
+        publisherService.publishJsonMessage(message, queueName);
     }
 
 }
