@@ -1,6 +1,5 @@
 package com.rmq.example.subscriber.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -8,10 +7,9 @@ import lombok.ToString;
 @ToString
 public class QueueMessage {
 
-    @JsonProperty("key1")
-    private String key1;
-
-    @JsonProperty("key2")
-    private String key2;
+    private String id;
+    private String content;
+    private String sender;
+    private java.time.LocalDateTime timestamp;
 
 }
