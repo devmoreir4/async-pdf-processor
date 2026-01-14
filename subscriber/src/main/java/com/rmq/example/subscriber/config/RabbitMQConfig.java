@@ -25,14 +25,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue boqQueue() {
-        return QueueBuilder.durable("boq." + queueName)
-                .deadLetterExchange("")
-                .deadLetterRoutingKey(queueName + ".dlq")
-                .build();
-    }
-
-    @Bean
     public Queue deadLetterQueue() {
         return QueueBuilder.durable(queueName + ".dlq").build();
     }

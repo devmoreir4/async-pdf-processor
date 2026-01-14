@@ -1,15 +1,12 @@
 package com.rmq.example.subscriber.model;
 
-import lombok.Data;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 
-@Data
-@ToString
-public class QueueMessage {
-
-    private String id;
-    private String content;
-    private String sender;
-    private java.time.LocalDateTime timestamp;
-
-}
+public record QueueMessage(
+    String id,
+    String content,
+    String sender,
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    LocalDateTime timestamp
+) {}
