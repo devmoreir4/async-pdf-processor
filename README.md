@@ -10,7 +10,7 @@ This project simulates a decoupling scenario where a **Publisher** generates tas
 
 - **Dead Letter Queue (DLQ):** Failed messages are moved to a DLQ after retry attempts
 - **Retry with Backoff:** Exponential backoff retry (3 attempts, 2s initial, 2x multiplier)
-- **Prefetch Count = 1:** Fair dispatching for load balancing
+- **Prefetch Count:** Fair dispatching for load balancing
 - **Dockerized:** RabbitMQ environment managed via Docker Compose
 
 ## Prerequisites
