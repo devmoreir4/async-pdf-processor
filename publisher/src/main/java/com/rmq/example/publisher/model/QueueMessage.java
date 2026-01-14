@@ -1,15 +1,23 @@
 package com.rmq.example.publisher.model;
 
-import lombok.Data;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Data
-@ToString
-public class QueueMessage {
+public record QueueMessage(
+    String id,
+    String content,
+    String sender,
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    LocalDateTime timestamp
+) {
 
-    private String id;
-    private String content;
-    private String sender;
-    private java.time.LocalDateTime timestamp;
-
+    public QueueMessage withDefaults() {
+        return new QueueMessage(
+            id != null ? id : UUID.randomUUID().toString(),
+            content,
+            sender,
+            timestamp != null ? timestamp : LocalDateTime.now()
+        );
+    }
 }

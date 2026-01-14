@@ -9,22 +9,20 @@ public class SubscriberService {
 
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveMessage(QueueMessage message) {
-
         try {
             System.out.println("Received message:");
-            System.out.println("  ID: " + message.getId());
-            System.out.println("  Sender: " + message.getSender());
-            System.out.println("  Content: " + message.getContent());
-            System.out.println("  Timestamp: " + message.getTimestamp());
+            System.out.println("  ID: " + message.id());
+            System.out.println("  Sender: " + message.sender());
+            System.out.println("  Content: " + message.content());
+            System.out.println("  Timestamp: " + message.timestamp());
 
-            // Simulate failure for DLQ testing
-            if ("fail".equalsIgnoreCase(message.getContent())) {
+            // Simulate failure to test DLQ
+            if ("fail".equalsIgnoreCase(message.content())) {
                 throw new RuntimeException("Simulated failure for DLQ testing");
             }
         } catch (Exception e) {
             System.err.println("Error processing message: " + e.getMessage());
-            throw e;
+            throw e; // Re-throw so retry/DLQ works
         }
     }
-
 }
