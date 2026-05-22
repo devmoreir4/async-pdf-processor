@@ -1,4 +1,4 @@
-package com.rmq.example.publisher;
+package com.rmq.devmoreir4.publisher;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

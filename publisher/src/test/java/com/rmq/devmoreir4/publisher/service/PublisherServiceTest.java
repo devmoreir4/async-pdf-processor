@@ -1,6 +1,9 @@
-package com.rmq.example.publisher.service;
+package com.rmq.devmoreir4.publisher.service;
 
-import com.rmq.example.publisher.model.QueueMessage;
+import com.rmq.devmoreir4.publisher.model.QueueMessage;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -120,6 +124,44 @@ class PublisherServiceTest {
 
             assertEquals("existing-id", result.id());
             assertEquals(TEST_TIMESTAMP, result.timestamp());
+        }
+
+        @Test
+        @DisplayName("Should generate id when id is blank")
+        void queueMessage_ShouldGenerateIdWhenBlank() {
+            QueueMessage message = new QueueMessage(" ", "content", "sender", TEST_TIMESTAMP);
+            QueueMessage result = message.withDefaults();
+
+            assertNotNull(result.id());
+            assertFalse(result.id().isBlank());
+            assertEquals(TEST_TIMESTAMP, result.timestamp());
+        }
+    }
+
+    @Nested
+    @DisplayName("Validation tests")
+    class ValidationTests {
+
+        private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+        @Test
+        @DisplayName("Should accept request payload without id")
+        void queueMessage_ShouldAcceptPayloadWithoutId() {
+            QueueMessage message = new QueueMessage(null, "content", "sender", null);
+
+            Set<ConstraintViolation<QueueMessage>> violations = validator.validate(message);
+
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should reject blank content and sender")
+        void queueMessage_ShouldRejectBlankContentAndSender() {
+            QueueMessage message = new QueueMessage(null, "", " ", null);
+
+            Set<ConstraintViolation<QueueMessage>> violations = validator.validate(message);
+
+            assertEquals(2, violations.size());
         }
     }
 }

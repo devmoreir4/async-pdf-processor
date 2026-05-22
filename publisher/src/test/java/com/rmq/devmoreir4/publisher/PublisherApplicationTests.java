@@ -1,4 +1,4 @@
-package com.rmq.example.publisher;
+package com.rmq.devmoreir4.publisher;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
