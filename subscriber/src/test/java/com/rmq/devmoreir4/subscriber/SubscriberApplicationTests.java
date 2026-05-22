@@ -1,4 +1,4 @@
-package com.rmq.example.subscriber;
+package com.rmq.devmoreir4.subscriber;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

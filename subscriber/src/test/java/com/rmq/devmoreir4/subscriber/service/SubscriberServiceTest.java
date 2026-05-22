@@ -1,21 +1,20 @@
-package com.rmq.example.subscriber.service;
+package com.rmq.devmoreir4.subscriber.service;
 
-import com.rmq.example.subscriber.model.QueueMessage;
-import org.junit.jupiter.api.BeforeEach;
+import com.rmq.devmoreir4.subscriber.model.QueueMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 class SubscriberServiceTest {
 
     @InjectMocks
@@ -96,42 +95,23 @@ class SubscriberServiceTest {
     class OutputTests {
 
         @Test
-        @DisplayName("Should print message details to console")
-        void receiveMessage_ShouldPrintMessageDetails() {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            PrintStream originalOut = System.out;
-            System.setOut(new PrintStream(outputStream));
-
+        @DisplayName("Should log message details")
+        void receiveMessage_ShouldLogMessageDetails(CapturedOutput output) {
             QueueMessage message = new QueueMessage("print-test-123", "Print test", "print-sender", TEST_TIMESTAMP);
 
-            try {
-                subscriberService.receiveMessage(message);
-                String output = outputStream.toString();
-                assertTrue(output.contains("Received message:"));
-                assertTrue(output.contains("ID: print-test-123"));
-                assertTrue(output.contains("Sender: print-sender"));
-                assertTrue(output.contains("Content: Print test"));
-            } finally {
-                System.setOut(originalOut);
-            }
+            subscriberService.receiveMessage(message);
+
+            assertTrue(output.getAll().contains("Message received - ID: print-test-123, Sender: print-sender"));
+            assertTrue(output.getAll().contains("Message processed successfully - ID: print-test-123"));
         }
 
         @Test
-        @DisplayName("Should print error when exception occurs")
-        void receiveMessage_ShouldPrintErrorWhenExceptionOccurs() {
-            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-            PrintStream originalErr = System.err;
-            System.setErr(new PrintStream(errorStream));
-
+        @DisplayName("Should log error when exception occurs")
+        void receiveMessage_ShouldLogErrorWhenExceptionOccurs(CapturedOutput output) {
             QueueMessage message = new QueueMessage("test-123", "fail", "test-sender", TEST_TIMESTAMP);
 
-            try {
-                assertThrows(RuntimeException.class, () -> subscriberService.receiveMessage(message));
-                String errorOutput = errorStream.toString();
-                assertTrue(errorOutput.contains("Error processing message:"));
-            } finally {
-                System.setErr(originalErr);
-            }
+            assertThrows(RuntimeException.class, () -> subscriberService.receiveMessage(message));
+            assertTrue(output.getAll().contains("Error processing message - ID: test-123"));
         }
     }
 }

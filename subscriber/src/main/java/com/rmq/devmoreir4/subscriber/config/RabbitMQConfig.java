@@ -1,4 +1,4 @@
-package com.rmq.example.subscriber.config;
+package com.rmq.devmoreir4.subscriber.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -35,5 +35,4 @@ public class RabbitMQConfig {
         mapper.registerModule(new JavaTimeModule());
         return new Jackson2JsonMessageConverter(mapper);
     }
-
 }

@@ -1,4 +1,4 @@
-package com.rmq.example.subscriber;
+package com.rmq.devmoreir4.subscriber;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
