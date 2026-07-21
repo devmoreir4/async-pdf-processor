@@ -1,9 +1,10 @@
 package com.rmq.devmoreir4.publisher.service;
 
-import com.rmq.devmoreir4.publisher.model.QueueMessage;
+import com.rmq.devmoreir4.publisher.model.DocumentProcessingMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,18 +12,21 @@ public class PublisherService {
 
     private static final Logger logger = LoggerFactory.getLogger(PublisherService.class);
     private final RabbitTemplate rabbitTemplate;
+    private final String queueName;
 
-    public PublisherService(RabbitTemplate rabbitTemplate) {
+    public PublisherService(
+            RabbitTemplate rabbitTemplate,
+            @Value("${rabbitmq.queue.name}") String queueName) {
         this.rabbitTemplate = rabbitTemplate;
+        this.queueName = queueName;
     }
 
-    public void publishJsonMessage(QueueMessage message, String queueName) {
-        try {
-            rabbitTemplate.convertAndSend(queueName, message);
-            logger.info("Message published successfully to queue: {} - ID: {}", queueName, message.id());
-        } catch (RuntimeException e) {
-            logger.error("Failed to publish message to queue: {}", queueName, e);
-            throw e;
-        }
+    public void publish(DocumentProcessingMessage message) {
+        rabbitTemplate.invoke(operations -> {
+            operations.convertAndSend(queueName, message);
+            operations.waitForConfirmsOrDie(5000);
+            return null;
+        });
+        logger.info("Document queued - ID: {}, queue: {}", message.documentId(), queueName);
     }
 }

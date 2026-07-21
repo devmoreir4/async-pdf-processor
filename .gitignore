@@ -109,6 +109,8 @@ logs/
 
 # Generated files
 generated/
+storage/*
+!storage/.gitkeep
 
 # Test reports
 /test-results/
